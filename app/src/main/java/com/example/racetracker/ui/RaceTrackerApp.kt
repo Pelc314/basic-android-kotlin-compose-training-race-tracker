@@ -67,7 +67,15 @@ fun RaceTrackerApp() {
         RaceParticipant(name = "Player 2", progressIncrement = 2)
     }
     var raceInProgress by remember { mutableStateOf(false) }
-
+    if (raceInProgress) {
+        LaunchedEffect(playerOne, playerTwo) {
+            coroutineScope {
+                launch { playerOne.run() }
+                launch { playerTwo.run() }
+            }
+            raceInProgress = false
+        }
+    }
     RaceTrackerScreen(
         playerOne = playerOne,
         playerTwo = playerTwo,
@@ -98,7 +106,7 @@ private fun RaceTrackerScreen(
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_walk),
@@ -186,7 +194,7 @@ private fun RaceControls(
     onRunStateChange: (Boolean) -> Unit,
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
-    isRunning: Boolean = true,
+    isRunning: Boolean = true
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
